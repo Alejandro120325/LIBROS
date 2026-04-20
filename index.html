@@ -10,10 +10,6 @@
 </head>
 <body>
 
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-<canvas id="particle-canvas"></canvas>
-
 <!-- ══ SEARCH OVERLAY ══════════════════════════════════════════ -->
 <div id="search-overlay" class="search-overlay">
     <button class="search-overlay-close" onclick="closeSearch()">✕</button>
@@ -37,17 +33,11 @@
         <h3 class="cart-title">Mi carrito <span id="cart-item-count" class="cart-badge">0</span></h3>
         <button class="cart-close" onclick="closeCart()">✕</button>
     </div>
-    <div id="cart-items" class="cart-items">
-        <div class="cart-empty" id="cart-empty">
-            <div class="cart-empty-icon">📚</div>
-            <p>Tu carrito está vacío</p>
-            <button class="cart-empty-btn" onclick="closeCart(); scrollToBooks()">Explorar catálogo</button>
-        </div>
-    </div>
+    <div id="cart-items" class="cart-items"></div>
     <div class="cart-footer" id="cart-footer" style="display:none">
         <div class="cart-summary">
             <div class="cart-summary-row"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
-            <div class="cart-summary-row"><span>Envío</span><span class="free-tag" id="cart-shipping">Gratis</span></div>
+            <div class="cart-summary-row"><span>Envío</span><span id="cart-shipping" class="free-tag">Gratis</span></div>
             <div class="cart-summary-row cart-total-row"><span>Total</span><span id="cart-total">$0.00</span></div>
         </div>
         <button class="checkout-btn" onclick="openCheckout()">Ir al pago →</button>
@@ -110,15 +100,15 @@
             <div class="checkout-section">
                 <h4 class="checkout-section-title">Método de pago</h4>
                 <div class="payment-methods">
-                    <label class="payment-method" id="pm-card">
+                    <label class="payment-method active">
                         <input type="radio" name="payment" value="card" checked onchange="selectPayment(this)">
                         <span class="pm-label">💳 Tarjeta crédito/débito</span>
                     </label>
-                    <label class="payment-method" id="pm-transfer">
+                    <label class="payment-method">
                         <input type="radio" name="payment" value="transfer" onchange="selectPayment(this)">
                         <span class="pm-label">🏦 Transferencia bancaria</span>
                     </label>
-                    <label class="payment-method" id="pm-paypal">
+                    <label class="payment-method">
                         <input type="radio" name="payment" value="paypal" onchange="selectPayment(this)">
                         <span class="pm-label">🅿 PayPal</span>
                     </label>
@@ -155,7 +145,6 @@
             </div>
         </div>
     </div>
-    <!-- ORDER SUCCESS (inside checkout modal) -->
     <div id="order-success" class="order-success" style="display:none">
         <div class="order-success-icon">✓</div>
         <h3 class="order-success-title">¡Pedido confirmado!</h3>
@@ -166,8 +155,8 @@
 </div>
 
 <!-- ══ NAV ═════════════════════════════════════════════════════ -->
-<nav>
-    <a href="#" class="nav-logo" onclick="scrollToTop()">F<span>olio</span></a>
+<nav id="main-nav">
+    <a href="#" class="nav-logo" onclick="event.preventDefault(); scrollToTop()">F<span>olio</span></a>
     <ul class="nav-links">
         <li><a href="#catalogo" onclick="event.preventDefault(); scrollToBooks()">Catálogo</a></li>
         <li><a href="#novedades" onclick="event.preventDefault(); scrollToReleases()">Novedades</a></li>
@@ -188,6 +177,7 @@
 
 <!-- ══ HERO ════════════════════════════════════════════════════ -->
 <section class="hero">
+    <canvas id="particle-canvas"></canvas>
     <div class="hero-bg"></div>
     <div class="hero-content">
         <div class="hero-tag">Nueva colección 2025</div>
@@ -199,16 +189,16 @@
         <p class="hero-sub">Más de 500,000 títulos. Envío express. La librería digital más refinada de América Latina.</p>
         <div class="hero-cta">
             <button class="btn-primary" onclick="scrollToBooks()"><span>Explorar catálogo →</span></button>
-            <button class="btn-secondary" onclick="filterBooks('all'); scrollToBooks()">Ver bestsellers</button>
+            <button class="btn-secondary" onclick="scrollToBooks()">Ver bestsellers</button>
         </div>
         <div class="hero-stats">
-            <div class="stat"><div class="stat-num" data-target="500">0K</div><div class="stat-label">Títulos</div></div>
+            <div class="stat"><div class="stat-num">500K+</div><div class="stat-label">Títulos</div></div>
             <div class="stat"><div class="stat-num">24h</div><div class="stat-label">Envío express</div></div>
-            <div class="stat"><div class="stat-num" data-target="98">0%</div><div class="stat-label">Satisfacción</div></div>
+            <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Satisfacción</div></div>
         </div>
     </div>
     <div class="hero-3d">
-        <div class="book-scene">
+        <div class="book-scene" id="book-scene">
             <div class="book-3d b1" onclick="openBookModalById(1)">
                 <div class="front"><div class="front-deco">♛</div><div class="front-title">El nombre del viento</div><div class="front-author">Patrick Rothfuss</div></div>
                 <div class="back"></div>
@@ -268,11 +258,10 @@
         <div class="search-tags">
             <span class="search-tag" onclick="quickSearch('Fantasía')">Fantasía</span>
             <span class="search-tag" onclick="quickSearch('Ciencia Ficción')">Ciencia Ficción</span>
-            <span class="search-tag" onclick="quickSearch('Novela histórica')">Novela histórica</span>
-            <span class="search-tag" onclick="quickSearch('Autoayuda')">Autoayuda</span>
-            <span class="search-tag" onclick="quickSearch('Thriller')">Thriller</span>
             <span class="search-tag" onclick="quickSearch('Literatura')">Literatura</span>
+            <span class="search-tag" onclick="quickSearch('Thriller')">Thriller</span>
             <span class="search-tag" onclick="quickSearch('No Ficción')">No Ficción</span>
+            <span class="search-tag" onclick="quickSearch('Clásico')">Clásicos</span>
         </div>
     </div>
 </div>
@@ -285,36 +274,12 @@
         <div class="section-line"></div>
     </div>
     <div class="cat-grid stagger">
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#1a0a2e,#3d1a5c)" onclick="filterByGenre('Fantasía')">
-            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
-            <div class="cat-icon">🔮</div>
-            <div class="cat-info"><div class="cat-name">Fantasía</div><div class="cat-count" id="cnt-Fantasía">— títulos</div></div>
-        </div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#0a1a2e,#0f3a5c)" onclick="filterByGenre('Ciencia Ficción')">
-            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
-            <div class="cat-icon">🚀</div>
-            <div class="cat-info"><div class="cat-name">Ciencia ficción</div><div class="cat-count" id="cnt-Ciencia Ficción">— títulos</div></div>
-        </div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#2e0a0a,#5c1a1a)" onclick="filterByGenre('Thriller')">
-            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
-            <div class="cat-icon">🗡️</div>
-            <div class="cat-info"><div class="cat-name">Thriller</div><div class="cat-count" id="cnt-Thriller">— títulos</div></div>
-        </div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#0a2e0a,#1a5c1a)" onclick="filterByGenre('Literatura')">
-            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
-            <div class="cat-icon">📜</div>
-            <div class="cat-info"><div class="cat-name">Literatura</div><div class="cat-count" id="cnt-Literatura">— títulos</div></div>
-        </div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#2e1a0a,#5c3a0a)" onclick="filterByGenre('No Ficción')">
-            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
-            <div class="cat-icon">🧠</div>
-            <div class="cat-info"><div class="cat-name">No Ficción</div><div class="cat-count" id="cnt-No Ficción">— títulos</div></div>
-        </div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#1a0a2e,#2e0a4a)" onclick="filterByGenre('all')">
-            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
-            <div class="cat-icon">💫</div>
-            <div class="cat-info"><div class="cat-name">Ver todo</div><div class="cat-count">Catálogo completo</div></div>
-        </div>
+        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#1a0a2e,#3d1a5c)" onclick="filterByGenre('Fantasía')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">🔮</div><div class="cat-info"><div class="cat-name">Fantasía</div><div class="cat-count" id="cnt-Fantasía">— títulos</div></div></div>
+        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#0a1a2e,#0f3a5c)" onclick="filterByGenre('Ciencia Ficción')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">🚀</div><div class="cat-info"><div class="cat-name">Ciencia ficción</div><div class="cat-count" id="cnt-Ciencia Ficción">— títulos</div></div></div>
+        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#2e0a0a,#5c1a1a)" onclick="filterByGenre('Thriller')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">🗡️</div><div class="cat-info"><div class="cat-name">Thriller</div><div class="cat-count" id="cnt-Thriller">— títulos</div></div></div>
+        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#0a2e0a,#1a5c1a)" onclick="filterByGenre('Literatura')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">📜</div><div class="cat-info"><div class="cat-name">Literatura</div><div class="cat-count" id="cnt-Literatura">— títulos</div></div></div>
+        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#2e1a0a,#5c3a0a)" onclick="filterByGenre('No Ficción')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">🧠</div><div class="cat-info"><div class="cat-name">No Ficción</div><div class="cat-count" id="cnt-No Ficción">— títulos</div></div></div>
+        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#1a0a2e,#2e0a4a)" onclick="filterByGenre('all')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">💫</div><div class="cat-info"><div class="cat-name">Ver todo</div><div class="cat-count">Catálogo completo</div></div></div>
     </div>
 </section>
 
@@ -359,13 +324,12 @@
 </section>
 
 <!-- ══ FEATURED BOOK ═══════════════════════════════════════════ -->
-<section class="featured-banner reveal" id="featured">
+<section class="featured-banner" id="featured">
     <div class="featured-inner">
         <div class="featured-image-wrap reveal-left">
             <div class="featured-book-3d">
                 <div class="featured-cover" style="background:linear-gradient(135deg,#8B2635,#2d0a10)">
-                    <img class="featured-photo" src="https://covers.openlibrary.org/b/isbn/0756404746-L.jpg"
-                         alt="El nombre del viento" onload="this.style.opacity=1" onerror="this.remove()">
+                    <img class="featured-photo" src="https://covers.openlibrary.org/b/isbn/0756404746-L.jpg" alt="El nombre del viento" onload="this.style.opacity=1" onerror="this.style.display='none'">
                     <div class="featured-cover-inner">
                         <div style="position:relative;z-index:1">
                             <div style="font-family:var(--mono);font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.8rem">Libro del mes</div>
@@ -384,9 +348,7 @@
             <span class="section-tag">Destacado de la semana</span>
             <h2 class="section-title" style="text-align:left">Un mago narra<br><em>su propia leyenda</em></h2>
             <div class="section-line" style="margin:1.5rem 0 0"></div>
-            <p class="featured-desc">
-                Kvothe, el mago más temido de su época, ahora posadero en un pueblo olvidado, relata su vida durante tres días. Una historia dentro de la historia que redefine la fantasía épica contemporánea con una prosa de una belleza extraordinaria.
-            </p>
+            <p class="featured-desc">Kvothe, el mago más temido de su época, ahora posadero en un pueblo olvidado, relata su vida durante tres días. Una historia dentro de la historia que redefine la fantasía épica contemporánea con una prosa de una belleza extraordinaria.</p>
             <div class="featured-author-row">
                 <div class="featured-author-avatar">PR</div>
                 <div>
@@ -395,15 +357,13 @@
                 </div>
             </div>
             <div class="featured-price-row">
-                <div>
-                    <div style="display:flex;align-items:baseline;gap:.8rem">
-                        <div class="featured-price-main">$22.90</div>
-                        <div class="featured-price-old">$32.00</div>
-                        <div class="featured-discount">-28%</div>
-                    </div>
+                <div style="display:flex;align-items:baseline;gap:.8rem">
+                    <div class="featured-price-main">$22.90</div>
+                    <div class="featured-price-old">$32.00</div>
+                    <div class="featured-discount">-28%</div>
                 </div>
-                <div style="display:flex;gap:1rem">
-                    <button class="btn-primary" onclick="addToCart(1); showToast('El nombre del viento agregado al carrito')"><span>+ Carrito</span></button>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                    <button class="btn-primary" onclick="addToCart(1)"><span>+ Carrito</span></button>
                     <button class="btn-secondary" onclick="openBookModalById(1)">Ver detalles</button>
                 </div>
             </div>
@@ -428,8 +388,7 @@
         <h2 class="newsletter-title">Lecturas curadas, <em>cada semana</em></h2>
         <p class="newsletter-sub">Recibe recomendaciones editoriales, ofertas exclusivas y acceso anticipado a nuevos títulos. Sin spam, solo buenos libros.</p>
         <div class="newsletter-form">
-            <input class="newsletter-input" id="newsletter-email" type="email" placeholder="tu@correo.com"
-                   onkeydown="if(event.key==='Enter') subscribeNewsletter()">
+            <input class="newsletter-input" id="newsletter-email" type="email" placeholder="tu@correo.com" onkeydown="if(event.key==='Enter') subscribeNewsletter()">
             <button class="newsletter-btn" onclick="subscribeNewsletter()">Suscribirme →</button>
         </div>
         <div id="newsletter-msg" class="newsletter-msg" style="display:none"></div>
@@ -440,12 +399,12 @@
 <footer>
     <div class="footer-grid">
         <div class="footer-brand">
-            <a href="#" class="nav-logo" onclick="scrollToTop()">F<span>olio</span></a>
+            <a href="#" class="nav-logo" onclick="event.preventDefault(); scrollToTop()">F<span>olio</span></a>
             <p>La librería digital más refinada de América Latina. Más de 500,000 títulos cuidadosamente curados para los lectores más exigentes.</p>
             <div class="footer-social" style="margin-top:1.5rem">
-                <a href="#" onclick="showToast('Instagram — próximamente')">Instagram</a>
-                <a href="#" onclick="showToast('Twitter — próximamente')">Twitter</a>
-                <a href="#" onclick="showToast('TikTok — próximamente')">TikTok</a>
+                <a href="#" onclick="event.preventDefault(); showToast('Instagram — próximamente')">Instagram</a>
+                <a href="#" onclick="event.preventDefault(); showToast('Twitter — próximamente')">Twitter</a>
+                <a href="#" onclick="event.preventDefault(); showToast('TikTok — próximamente')">TikTok</a>
             </div>
         </div>
         <div class="footer-col">
@@ -455,7 +414,6 @@
                 <li><a href="#" onclick="event.preventDefault(); scrollToReleases()">Novedades</a></li>
                 <li><a href="#" onclick="event.preventDefault(); showToast('E-books — próximamente')">E-books</a></li>
                 <li><a href="#" onclick="event.preventDefault(); showToast('Audiolibros — próximamente')">Audiolibros</a></li>
-                <li><a href="#" onclick="event.preventDefault(); showToast('Preventa — próximamente')">Preventa</a></li>
             </ul>
         </div>
         <div class="footer-col">
@@ -464,18 +422,16 @@
                 <li><a href="#" onclick="event.preventDefault(); showToast('Sobre Folio')">Sobre Folio</a></li>
                 <li><a href="#" onclick="event.preventDefault(); showToast('Envíos gratuitos sobre $40')">Envíos</a></li>
                 <li><a href="#" onclick="event.preventDefault(); showToast('Devoluciones sin costo en 30 días')">Devoluciones</a></li>
-                <li><a href="#" onclick="event.preventDefault(); showToast('contacto@folio.ec')">Contacto</a></li>
                 <li><a href="#" onclick="event.preventDefault(); scrollToNewsletter()">Blog editorial</a></li>
             </ul>
         </div>
         <div class="footer-col">
             <h4>Mi cuenta</h4>
             <ul>
-                <li><a href="#" onclick="event.preventDefault(); showToast('Módulo de cuenta — próximamente')">Iniciar sesión</a></li>
-                <li><a href="#" onclick="event.preventDefault(); showToast('Registro — próximamente')">Registro</a></li>
                 <li><a href="#" onclick="event.preventDefault(); openCart()">Mi carrito</a></li>
                 <li><a href="#" onclick="event.preventDefault(); openWishlistView()">Lista de deseos</a></li>
-                <li><a href="#" onclick="event.preventDefault(); showToast('Historial de pedidos')">Mis pedidos</a></li>
+                <li><a href="#" onclick="event.preventDefault(); showToast('Historial de pedidos — próximamente')">Mis pedidos</a></li>
+                <li><a href="#" onclick="event.preventDefault(); showToast('Registro — próximamente')">Crear cuenta</a></li>
             </ul>
         </div>
     </div>
