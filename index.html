@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOLIO — Librería de Autor</title>
+    <title>FOLIO — Librería de Alejo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -180,7 +180,7 @@
     <canvas id="particle-canvas"></canvas>
     <div class="hero-bg"></div>
     <div class="hero-content">
-        <div class="hero-tag">Nueva colección 2025</div>
+        <div class="hero-tag">Nueva colección 2026</div>
         <h1 class="hero-title">
             <span class="line">Donde cada</span>
             <span class="line">historia vive</span>
@@ -237,10 +237,6 @@
             </div>
             <div class="shadow-blob"></div>
         </div>
-    </div>
-    <div class="scroll-indicator">
-        <div class="scroll-text">Scroll</div>
-        <div class="scroll-line"></div>
     </div>
 </section>
 
@@ -436,14 +432,62 @@
         </div>
     </div>
     <div class="footer-bottom">
-        <div class="footer-copy">© 2025 Folio Librería Digital — Todos los derechos reservados</div>
-        <div class="footer-copy">Hecho con ♡ para los amantes de los libros</div>
+        <div class="footer-copy">© 2026 Folio Librería Digital — Todos los derechos reservados</div>
+        <div class="footer-copy">Alejandro Ojeda</div>
     </div>
 </footer>
 
 <!-- ══ TOAST ═══════════════════════════════════════════════════ -->
 <div class="toast" id="toast"><span id="toast-text"></span></div>
 
+<!-- ══ RATING MODAL ════════════════════════════════════════════ -->
+<div id="rating-modal" class="rating-modal">
+    <div class="rating-modal-inner">
+        <button class="rating-modal-close" onclick="closeRating()">✕</button>
+        <div class="rating-header">
+            <div style="font-family:var(--serif);font-size:1.7rem;font-weight:800;color:var(--gold);letter-spacing:.08em;margin-bottom:.5rem">F<span style="font-style:italic;font-weight:400">olio</span></div>
+            <h3 class="rating-title">¿Cómo calificarías<br>tu experiencia?</h3>
+            <p class="rating-subtitle">Tu opinión nos ayuda a mejorar</p>
+        </div>
+        <div id="rating-stars-container" class="rating-stars-container">
+            <span class="rs-star empty">★</span>
+            <span class="rs-star empty">★</span>
+            <span class="rs-star empty">★</span>
+            <span class="rs-star empty">★</span>
+            <span class="rs-star empty">★</span>
+        </div>
+        <div id="rating-label" class="rating-label-text">Pasa el cursor sobre las estrellas</div>
+        <button id="rating-submit-btn" class="rating-submit-btn" onclick="submitRating()" style="display:none">Enviar calificación →</button>
+        <div id="rating-result" class="rating-result" style="display:none">
+            <div class="rating-result-stars"></div>
+            <p class="rating-result-text"></p>
+            <button class="rating-change-btn" onclick="resetRating()">Cambiar calificación</button>
+            <button class="rating-close-btn" onclick="closeRating()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ RATING TRIGGER ══════════════════════════════════════════ -->
+<button class="rating-fab" id="rating-fab" onclick="openRating()" title="Calificar Folio">
+    <span id="fab-star">★</span>
+    <span id="fab-text">Calificar</span>
+</button>
+
+<!-- ══ THEME SWITCHER ══════════════════════════════════════════ -->
+<div class="theme-switcher" id="theme-switcher">
+    <span class="theme-switcher-label">Tema</span>
+    <button class="theme-btn active" id="tbtn-default" onclick="setTheme('default')" title="Oscuro Clásico">
+        <span class="theme-dot" style="background:linear-gradient(135deg,#080808 50%,#c9a84c 50%)"></span>
+    </button>
+    <button class="theme-btn" id="tbtn-warm" onclick="setTheme('warm')" title="Ámbar Antiguo">
+        <span class="theme-dot" style="background:linear-gradient(135deg,#0c0805 50%,#d4922a 50%)"></span>
+    </button>
+    <button class="theme-btn" id="tbtn-neon" onclick="setTheme('neon')" title="Neón Digital">
+        <span class="theme-dot" style="background:linear-gradient(135deg,#040810 50%,#00c8ff 50%)"></span>
+    </button>
+</div>
+
 <script src="script.js"></script>
+
 </body>
 </html>
