@@ -1,6 +1,10 @@
 # FOLIO — Librería Digital Premium 📚✨
 
-Folio es una plataforma web interactiva y de alto rendimiento diseñada para emular la experiencia de una librería de autor de lujo. El proyecto se centra en ofrecer una interfaz de usuario (UI) inmersiva mediante renderizado 3D nativo en CSS, sistemas de partículas dinámicas y una gestión de estado del lado del cliente optimizada.
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+
+Este proyecto es una plataforma web interactiva y de alto rendimiento diseñada para emular la experiencia de una librería de autor de lujo. El proyecto se centra en ofrecer una interfaz de usuario (UI) inmersiva mediante renderizado 3D nativo en CSS, sistemas de partículas dinámicas y una gestión de estado del lado del cliente optimizada.
 
 ## 🚀 Características Principales
 
