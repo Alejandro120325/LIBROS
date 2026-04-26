@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="default">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FOLIO — Librería de Alejo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- ══ SEARCH OVERLAY ══════════════════════════════════════════ -->
+<div id="aurora-bg" aria-hidden="true">
+    <div class="aurora-orb a1"></div>
+    <div class="aurora-orb a2"></div>
+    <div class="aurora-orb a3"></div>
+</div>
+
 <div id="search-overlay" class="search-overlay">
     <button class="search-overlay-close" onclick="closeSearch()">✕</button>
     <div class="search-overlay-inner">
@@ -26,7 +32,46 @@
     </div>
 </div>
 
-<!-- ══ CART SIDEBAR ════════════════════════════════════════════ -->
+<div id="auth-overlay" class="auth-overlay" onclick="closeAuth()"></div>
+<div id="auth-modal" class="auth-modal glass-panel">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <div class="auth-logo">F<span>olio</span></div>
+    <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Iniciar sesión</button>
+        <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Registrarse</button>
+    </div>
+    <div id="auth-login-form" class="auth-form">
+        <div class="auth-form-group">
+            <label class="auth-label">Email</label>
+            <input class="auth-input" id="login-email" type="email" placeholder="tu@email.com">
+        </div>
+        <div class="auth-form-group">
+            <label class="auth-label">Contraseña</label>
+            <input class="auth-input" id="login-pass" type="password" placeholder="••••••••">
+        </div>
+        <div id="auth-login-err" class="auth-err"></div>
+        <button class="auth-submit-btn" onclick="handleLogin()">Entrar →</button>
+        <p class="auth-switch-text">¿No tienes cuenta? <button onclick="switchAuthTab('register')">Regístrate gratis</button></p>
+    </div>
+    <div id="auth-register-form" class="auth-form" style="display:none">
+        <div class="auth-form-group">
+            <label class="auth-label">Nombre completo</label>
+            <input class="auth-input" id="reg-name" type="text" placeholder="Tu nombre">
+        </div>
+        <div class="auth-form-group">
+            <label class="auth-label">Email</label>
+            <input class="auth-input" id="reg-email" type="email" placeholder="tu@email.com">
+        </div>
+        <div class="auth-form-group">
+            <label class="auth-label">Contraseña</label>
+            <input class="auth-input" id="reg-pass" type="password" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div id="auth-reg-err" class="auth-err"></div>
+        <button class="auth-submit-btn" onclick="handleRegister()">Crear cuenta →</button>
+        <p class="auth-switch-text">¿Ya tienes cuenta? <button onclick="switchAuthTab('login')">Inicia sesión</button></p>
+    </div>
+</div>
+
 <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
 <aside id="cart-sidebar" class="cart-sidebar">
     <div class="cart-header">
@@ -45,14 +90,12 @@
     </div>
 </aside>
 
-<!-- ══ BOOK DETAIL MODAL ═══════════════════════════════════════ -->
 <div id="book-modal-overlay" class="modal-overlay" onclick="closeBookModal()"></div>
 <div id="book-modal" class="book-modal">
     <button class="modal-close" onclick="closeBookModal()">✕</button>
     <div id="book-modal-content" class="book-modal-content"></div>
 </div>
 
-<!-- ══ CHECKOUT MODAL ══════════════════════════════════════════ -->
 <div id="checkout-overlay" class="modal-overlay" onclick="closeCheckout()"></div>
 <div id="checkout-modal" class="checkout-modal">
     <button class="modal-close" onclick="closeCheckout()">✕</button>
@@ -62,74 +105,31 @@
             <div class="checkout-section">
                 <h4 class="checkout-section-title">Datos personales</h4>
                 <div class="form-row-2">
-                    <div class="form-group">
-                        <label class="form-label">Nombre completo *</label>
-                        <input class="form-input" id="ch-name" type="text" placeholder="Tu nombre">
-                        <span class="form-error" id="err-name"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Email *</label>
-                        <input class="form-input" id="ch-email" type="email" placeholder="tu@email.com">
-                        <span class="form-error" id="err-email"></span>
-                    </div>
+                    <div class="form-group"><label class="form-label">Nombre completo *</label><input class="form-input" id="ch-name" type="text" placeholder="Tu nombre"><span class="form-error" id="err-name"></span></div>
+                    <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="ch-email" type="email" placeholder="tu@email.com"><span class="form-error" id="err-email"></span></div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Teléfono</label>
-                    <input class="form-input" id="ch-phone" type="tel" placeholder="+593 99 999 9999">
-                </div>
+                <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="ch-phone" type="tel" placeholder="+593 99 999 9999"></div>
             </div>
             <div class="checkout-section">
                 <h4 class="checkout-section-title">Dirección de envío</h4>
-                <div class="form-group">
-                    <label class="form-label">Dirección *</label>
-                    <input class="form-input" id="ch-address" type="text" placeholder="Calle y número">
-                    <span class="form-error" id="err-address"></span>
-                </div>
+                <div class="form-group"><label class="form-label">Dirección *</label><input class="form-input" id="ch-address" type="text" placeholder="Calle y número"><span class="form-error" id="err-address"></span></div>
                 <div class="form-row-2">
-                    <div class="form-group">
-                        <label class="form-label">Ciudad *</label>
-                        <input class="form-input" id="ch-city" type="text" placeholder="Quito">
-                        <span class="form-error" id="err-city"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Código postal</label>
-                        <input class="form-input" id="ch-zip" type="text" placeholder="170101">
-                    </div>
+                    <div class="form-group"><label class="form-label">Ciudad *</label><input class="form-input" id="ch-city" type="text" placeholder="Quito"><span class="form-error" id="err-city"></span></div>
+                    <div class="form-group"><label class="form-label">Código postal</label><input class="form-input" id="ch-zip" type="text" placeholder="170101"></div>
                 </div>
             </div>
             <div class="checkout-section">
                 <h4 class="checkout-section-title">Método de pago</h4>
                 <div class="payment-methods">
-                    <label class="payment-method active">
-                        <input type="radio" name="payment" value="card" checked onchange="selectPayment(this)">
-                        <span class="pm-label">💳 Tarjeta crédito/débito</span>
-                    </label>
-                    <label class="payment-method">
-                        <input type="radio" name="payment" value="transfer" onchange="selectPayment(this)">
-                        <span class="pm-label">🏦 Transferencia bancaria</span>
-                    </label>
-                    <label class="payment-method">
-                        <input type="radio" name="payment" value="paypal" onchange="selectPayment(this)">
-                        <span class="pm-label">🅿 PayPal</span>
-                    </label>
+                    <label class="payment-method active"><input type="radio" name="payment" value="card" checked onchange="selectPayment(this)"><span class="pm-label">💳 Tarjeta crédito/débito</span></label>
+                    <label class="payment-method"><input type="radio" name="payment" value="transfer" onchange="selectPayment(this)"><span class="pm-label">🏦 Transferencia bancaria</span></label>
+                    <label class="payment-method"><input type="radio" name="payment" value="paypal" onchange="selectPayment(this)"><span class="pm-label">🅿 PayPal</span></label>
                 </div>
                 <div id="card-fields" class="card-fields">
-                    <div class="form-group">
-                        <label class="form-label">Número de tarjeta *</label>
-                        <input class="form-input" id="ch-card" type="text" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)">
-                        <span class="form-error" id="err-card"></span>
-                    </div>
+                    <div class="form-group"><label class="form-label">Número de tarjeta *</label><input class="form-input" id="ch-card" type="text" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)"><span class="form-error" id="err-card"></span></div>
                     <div class="form-row-2">
-                        <div class="form-group">
-                            <label class="form-label">Vencimiento *</label>
-                            <input class="form-input" id="ch-expiry" type="text" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)">
-                            <span class="form-error" id="err-expiry"></span>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">CVV *</label>
-                            <input class="form-input" id="ch-cvv" type="text" placeholder="000" maxlength="4">
-                            <span class="form-error" id="err-cvv"></span>
-                        </div>
+                        <div class="form-group"><label class="form-label">Vencimiento *</label><input class="form-input" id="ch-expiry" type="text" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)"><span class="form-error" id="err-expiry"></span></div>
+                        <div class="form-group"><label class="form-label">CVV *</label><input class="form-input" id="ch-cvv" type="text" placeholder="000" maxlength="4"><span class="form-error" id="err-cvv"></span></div>
                     </div>
                 </div>
             </div>
@@ -148,36 +148,48 @@
     <div id="order-success" class="order-success" style="display:none">
         <div class="order-success-icon">✓</div>
         <h3 class="order-success-title">¡Pedido confirmado!</h3>
-        <p class="order-success-sub">Recibirás un email con los detalles de tu compra. ¡Gracias por confiar en FOLIO!</p>
+        <p class="order-success-sub">Recibirás un email con los detalles. ¡Gracias por confiar en FOLIO!</p>
         <div id="order-code" class="order-code"></div>
         <button class="btn-primary" style="margin-top:2rem" onclick="closeCheckout(); resetCart()"><span>Volver al catálogo</span></button>
     </div>
 </div>
 
-<!-- ══ NAV ═════════════════════════════════════════════════════ -->
 <nav id="main-nav">
     <a href="#" class="nav-logo" onclick="event.preventDefault(); scrollToTop()">F<span>olio</span></a>
     <ul class="nav-links">
         <li><a href="#catalogo" onclick="event.preventDefault(); scrollToBooks()">Catálogo</a></li>
         <li><a href="#novedades" onclick="event.preventDefault(); scrollToReleases()">Novedades</a></li>
         <li><a href="#categorias" onclick="event.preventDefault(); scrollToCategories()">Géneros</a></li>
-        <li><a href="#newsletter" onclick="event.preventDefault(); scrollToNewsletter()">Club de lectura</a></li>
+        <li><a href="#newsletter" onclick="event.preventDefault(); scrollToNewsletter()">Club</a></li>
     </ul>
     <div class="nav-actions">
-        <button class="nav-search-btn" onclick="openSearch()">⌕ Buscar</button>
+        <button class="nav-search-btn" onclick="openSearch()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
         <button class="nav-wishlist-btn" onclick="openWishlistView()" title="Lista de deseos">
-            <span id="wishlist-icon">♡</span>
+            <span id="wishlist-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
             <span id="wishlist-count" class="wishlist-count" style="display:none">0</span>
         </button>
         <button class="nav-cart-btn" onclick="openCart()">
-            🛒 <span class="cart-count" id="cart-count">0</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <span class="cart-count" id="cart-count">0</span>
         </button>
+        <div id="auth-logged-out" class="auth-nav-group">
+            <button class="nav-auth-btn ghost" onclick="openAuth('login')">Entrar</button>
+            <button class="nav-auth-btn solid" onclick="openAuth('register')">Registrarse</button>
+        </div>
+        <div id="auth-logged-in" class="auth-user-pill" style="display:none" onclick="openUserMenu()">
+            <span class="auth-avatar" id="auth-avatar">A</span>
+            <span class="auth-username" id="auth-username">Usuario</span>
+            <div class="auth-user-dropdown" id="user-dropdown">
+                <button onclick="handleLogout()">Cerrar sesión</button>
+            </div>
+        </div>
     </div>
 </nav>
 
-<!-- ══ HERO ════════════════════════════════════════════════════ -->
-<section class="hero">
-    <canvas id="particle-canvas"></canvas>
+<section class="hero" id="hero-section">
+    <canvas id="three-canvas"></canvas>
     <div class="hero-bg"></div>
     <div class="hero-content">
         <div class="hero-tag">Nueva colección 2026</div>
@@ -197,58 +209,17 @@
             <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Satisfacción</div></div>
         </div>
     </div>
-    <div class="hero-3d">
-        <div class="book-scene" id="book-scene">
-            <div class="book-3d b1" onclick="openBookModalById(1)">
-                <div class="front"><div class="front-deco">♛</div><div class="front-title">El nombre del viento</div><div class="front-author">Patrick Rothfuss</div></div>
-                <div class="back"></div>
-                <div class="spine"><div class="spine-text">El nombre del viento</div></div>
-                <div class="top"></div>
-            </div>
-            <div class="book-3d b2" onclick="openBookModalById(2)">
-                <div class="front"><div class="front-deco">✦</div><div class="front-title">Duna</div><div class="front-author">Frank Herbert</div></div>
-                <div class="back"></div>
-                <div class="spine"><div class="spine-text">Duna</div></div>
-                <div class="top"></div>
-            </div>
-            <div class="book-3d b3" onclick="openBookModalById(3)">
-                <div class="front"><div class="front-deco">❋</div><div class="front-title">Cien años de soledad</div><div class="front-author">García Márquez</div></div>
-                <div class="back"></div>
-                <div class="spine"><div class="spine-text">Cien años de soledad</div></div>
-                <div class="top"></div>
-            </div>
-            <div class="book-3d b4" onclick="openBookModalById(4)">
-                <div class="front"><div class="front-deco">◈</div><div class="front-title">1984</div><div class="front-author">George Orwell</div></div>
-                <div class="back"></div>
-                <div class="spine"><div class="spine-text">1984</div></div>
-                <div class="top"></div>
-            </div>
-            <div class="book-3d b5" onclick="openBookModalById(5)">
-                <div class="front"><div class="front-deco">⬡</div><div class="front-title">El alquimista</div><div class="front-author">Paulo Coelho</div></div>
-                <div class="back"></div>
-                <div class="spine"><div class="spine-text">El alquimista</div></div>
-                <div class="top"></div>
-            </div>
-            <div class="book-3d b6" onclick="openBookModalById(6)">
-                <div class="front"><div class="front-deco">✶</div><div class="front-title">La sombra del viento</div><div class="front-author">Carlos Ruiz Zafón</div></div>
-                <div class="back"></div>
-                <div class="spine"><div class="spine-text">La sombra del viento</div></div>
-                <div class="top"></div>
-            </div>
-            <div class="shadow-blob"></div>
-        </div>
+    <div class="hero-3d-hint">
+        <span>Haz clic en los libros para explorar</span>
+        <div class="hint-arrow">↗</div>
     </div>
 </section>
 
-<!-- ══ SEARCH BAR ══════════════════════════════════════════════ -->
-<div class="search-section">
+<div class="search-section section-transition">
     <div class="search-container">
         <span class="search-label">Encuentra tu próxima lectura</span>
         <div class="search-wrapper">
-            <input class="search-input" id="main-search" type="text"
-                   placeholder="Título, autor, ISBN, género…"
-                   oninput="mainSearchFilter(this.value)"
-                   onkeydown="if(event.key==='Enter') mainSearchFilter(this.value)">
+            <input class="search-input" id="main-search" type="text" placeholder="Título, autor, ISBN, género…" oninput="mainSearchFilter(this.value)" onkeydown="if(event.key==='Enter') mainSearchFilter(this.value)">
             <button class="search-btn" onclick="mainSearchFilter(document.getElementById('main-search').value)">Buscar</button>
         </div>
         <div class="search-tags">
@@ -262,24 +233,52 @@
     </div>
 </div>
 
-<!-- ══ CATEGORIES ══════════════════════════════════════════════ -->
-<section class="categories" id="categorias">
+<section class="categories section-transition" id="categorias">
     <div class="section-header reveal">
         <span class="section-tag">Explora por género</span>
         <h2 class="section-title">Universos <em>infinitos</em></h2>
         <div class="section-line"></div>
     </div>
     <div class="cat-grid stagger">
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#1a0a2e,#3d1a5c)" onclick="filterByGenre('Fantasía')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">🔮</div><div class="cat-info"><div class="cat-name">Fantasía</div><div class="cat-count" id="cnt-Fantasía">— títulos</div></div></div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#0a1a2e,#0f3a5c)" onclick="filterByGenre('Ciencia Ficción')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">🚀</div><div class="cat-info"><div class="cat-name">Ciencia ficción</div><div class="cat-count" id="cnt-Ciencia Ficción">— títulos</div></div></div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#2e0a0a,#5c1a1a)" onclick="filterByGenre('Thriller')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">🗡️</div><div class="cat-info"><div class="cat-name">Thriller</div><div class="cat-count" id="cnt-Thriller">— títulos</div></div></div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#0a2e0a,#1a5c1a)" onclick="filterByGenre('Literatura')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">📜</div><div class="cat-info"><div class="cat-name">Literatura</div><div class="cat-count" id="cnt-Literatura">— títulos</div></div></div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#2e1a0a,#5c3a0a)" onclick="filterByGenre('No Ficción')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">🧠</div><div class="cat-info"><div class="cat-name">No Ficción</div><div class="cat-count" id="cnt-No Ficción">— títulos</div></div></div>
-        <div class="cat-card" style="--cat-bg:linear-gradient(135deg,#1a0a2e,#2e0a4a)" onclick="filterByGenre('all')"><div class="cat-card-bg"></div><div class="cat-card-overlay"></div><div class="cat-icon">💫</div><div class="cat-info"><div class="cat-name">Ver todo</div><div class="cat-count">Catálogo completo</div></div></div>
+        <div class="cat-card" onclick="filterByGenre('Fantasía')" style="--cat-bg:linear-gradient(155deg,#1e0a3c 0%,#2d0f5a 50%,#0d0520 100%)">
+            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
+            <div class="cat-glow" style="background:radial-gradient(circle,rgba(160,80,255,.35) 0%,transparent 70%)"></div>
+            <div class="cat-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div>
+            <div class="cat-info"><div class="cat-name">Fantasía</div><div class="cat-count" id="cnt-Fantasía">6 títulos</div></div>
+        </div>
+        <div class="cat-card" onclick="filterByGenre('Ciencia Ficción')" style="--cat-bg:linear-gradient(155deg,#061828 0%,#0a2a4a 50%,#030d1a 100%)">
+            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
+            <div class="cat-glow" style="background:radial-gradient(circle,rgba(0,140,255,.3) 0%,transparent 70%)"></div>
+            <div class="cat-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg></div>
+            <div class="cat-info"><div class="cat-name">Ciencia Ficción</div><div class="cat-count" id="cnt-Ciencia Ficción">6 títulos</div></div>
+        </div>
+        <div class="cat-card" onclick="filterByGenre('Thriller')" style="--cat-bg:linear-gradient(155deg,#1a0505 0%,#350a0a 50%,#0a0202 100%)">
+            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
+            <div class="cat-glow" style="background:radial-gradient(circle,rgba(220,40,40,.28) 0%,transparent 70%)"></div>
+            <div class="cat-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path d="M12 5v2M12 17v2M5 12H3M21 12h-2"/></svg></div>
+            <div class="cat-info"><div class="cat-name">Thriller</div><div class="cat-count" id="cnt-Thriller">6 títulos</div></div>
+        </div>
+        <div class="cat-card" onclick="filterByGenre('Literatura')" style="--cat-bg:linear-gradient(155deg,#071a0f 0%,#0d2e18 50%,#030d08 100%)">
+            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
+            <div class="cat-glow" style="background:radial-gradient(circle,rgba(40,180,90,.25) 0%,transparent 70%)"></div>
+            <div class="cat-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <div class="cat-info"><div class="cat-name">Literatura</div><div class="cat-count" id="cnt-Literatura">9 títulos</div></div>
+        </div>
+        <div class="cat-card" onclick="filterByGenre('No Ficción')" style="--cat-bg:linear-gradient(155deg,#1a1505 0%,#2e2208 50%,#0a0802 100%)">
+            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
+            <div class="cat-glow" style="background:radial-gradient(circle,rgba(201,168,76,.3) 0%,transparent 70%)"></div>
+            <div class="cat-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 20h20M5 20V10l7-7 7 7v10"/><rect x="9" y="14" width="6" height="6"/></svg></div>
+            <div class="cat-info"><div class="cat-name">No Ficción</div><div class="cat-count" id="cnt-No Ficción">6 títulos</div></div>
+        </div>
+        <div class="cat-card" onclick="quickSearch('Clásico'); scrollToBooks()" style="--cat-bg:linear-gradient(155deg,#15100a 0%,#241a0d 50%,#080503 100%)">
+            <div class="cat-card-bg"></div><div class="cat-card-overlay"></div>
+            <div class="cat-glow" style="background:radial-gradient(circle,rgba(201,168,76,.22) 0%,transparent 70%)"></div>
+            <div class="cat-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></div>
+            <div class="cat-info"><div class="cat-name">Clásicos</div><div class="cat-count">Obras inmortales</div></div>
+        </div>
     </div>
 </section>
 
-<!-- ══ MARQUEE ═════════════════════════════════════════════════ -->
 <div class="marquee-section">
     <div class="marquee-track">
         <div class="marquee-item">Envío gratis sobre $40 <div class="marquee-dot"></div></div>
@@ -297,8 +296,7 @@
     </div>
 </div>
 
-<!-- ══ BOOKS SECTION ═══════════════════════════════════════════ -->
-<section class="bestsellers" id="catalogo">
+<section class="bestsellers section-transition" id="catalogo">
     <div class="section-header reveal">
         <span class="section-tag">Catálogo</span>
         <h2 class="section-title" id="section-title-books"><em>Bestsellers</em> del momento</h2>
@@ -319,8 +317,7 @@
     </div>
 </section>
 
-<!-- ══ FEATURED BOOK ═══════════════════════════════════════════ -->
-<section class="featured-banner" id="featured">
+<section class="featured-banner section-transition" id="featured">
     <div class="featured-inner">
         <div class="featured-image-wrap reveal-left">
             <div class="featured-book-3d">
@@ -344,7 +341,7 @@
             <span class="section-tag">Destacado de la semana</span>
             <h2 class="section-title" style="text-align:left">Un mago narra<br><em>su propia leyenda</em></h2>
             <div class="section-line" style="margin:1.5rem 0 0"></div>
-            <p class="featured-desc">Kvothe, el mago más temido de su época, ahora posadero en un pueblo olvidado, relata su vida durante tres días. Una historia dentro de la historia que redefine la fantasía épica contemporánea con una prosa de una belleza extraordinaria.</p>
+            <p class="featured-desc">Kvothe, el mago más temido de su época, ahora posadero en un pueblo olvidado, relata su vida durante tres días. Una historia dentro de la historia que redefine la fantasía épica contemporánea.</p>
             <div class="featured-author-row">
                 <div class="featured-author-avatar">PR</div>
                 <div>
@@ -367,8 +364,7 @@
     </div>
 </section>
 
-<!-- ══ NEW RELEASES ════════════════════════════════════════════ -->
-<section class="new-releases" id="novedades">
+<section class="new-releases section-transition" id="novedades">
     <div class="section-header reveal">
         <span class="section-tag">Recién llegados</span>
         <h2 class="section-title">Nuevas <em>incorporaciones</em></h2>
@@ -377,8 +373,7 @@
     <div id="releases-scroll" class="releases-scroll"></div>
 </section>
 
-<!-- ══ NEWSLETTER ══════════════════════════════════════════════ -->
-<section class="newsletter" id="newsletter">
+<section class="newsletter section-transition" id="newsletter">
     <div class="newsletter-inner reveal">
         <span class="section-tag">Club de lectura</span>
         <h2 class="newsletter-title">Lecturas curadas, <em>cada semana</em></h2>
@@ -391,16 +386,21 @@
     </div>
 </section>
 
-<!-- ══ FOOTER ══════════════════════════════════════════════════ -->
 <footer>
     <div class="footer-grid">
         <div class="footer-brand">
             <a href="#" class="nav-logo" onclick="event.preventDefault(); scrollToTop()">F<span>olio</span></a>
-            <p>La librería digital más refinada de América Latina. Más de 500,000 títulos cuidadosamente curados para los lectores más exigentes.</p>
-            <div class="footer-social" style="margin-top:1.5rem">
-                <a href="#" onclick="event.preventDefault(); showToast('Instagram — próximamente')">Instagram</a>
-                <a href="#" onclick="event.preventDefault(); showToast('Twitter — próximamente')">Twitter</a>
-                <a href="#" onclick="event.preventDefault(); showToast('TikTok — próximamente')">TikTok</a>
+            <p>La librería digital más refinada de América Latina. Más de 500,000 títulos cuidadosamente curados.</p>
+            <div class="footer-socials">
+                <a href="https://www.instagram.com/alejo_ojeda1203/" target="_blank" class="social-icon" title="Instagram">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/in/jairo-alejandro-ojeda-herrera-9466543a6/" target="_blank" class="social-icon" title="LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+                <a href="https://github.com/Alejandro120325" target="_blank" class="social-icon" title="GitHub">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                </a>
             </div>
         </div>
         <div class="footer-col">
@@ -424,37 +424,29 @@
         <div class="footer-col">
             <h4>Mi cuenta</h4>
             <ul>
+                <li><a href="#" onclick="event.preventDefault(); openAuth('login')">Iniciar sesión</a></li>
+                <li><a href="#" onclick="event.preventDefault(); openAuth('register')">Crear cuenta</a></li>
                 <li><a href="#" onclick="event.preventDefault(); openCart()">Mi carrito</a></li>
                 <li><a href="#" onclick="event.preventDefault(); openWishlistView()">Lista de deseos</a></li>
-                <li><a href="#" onclick="event.preventDefault(); showToast('Historial de pedidos — próximamente')">Mis pedidos</a></li>
-                <li><a href="#" onclick="event.preventDefault(); showToast('Registro — próximamente')">Crear cuenta</a></li>
             </ul>
         </div>
     </div>
     <div class="footer-bottom">
         <div class="footer-copy">© 2026 Folio Librería Digital — Todos los derechos reservados</div>
-        <div class="footer-copy">Alejandro Ojeda</div>
+        <div class="footer-copy">Jairo Alejandro Ojeda Herrera</div>
     </div>
 </footer>
 
-<!-- ══ TOAST ═══════════════════════════════════════════════════ -->
 <div class="toast" id="toast"><span id="toast-text"></span></div>
 
-<!-- ══ RATING MODAL ════════════════════════════════════════════ -->
 <div id="rating-modal" class="rating-modal">
     <div class="rating-modal-inner">
         <button class="rating-modal-close" onclick="closeRating()">✕</button>
-        <div class="rating-header">
-            <div style="font-family:var(--serif);font-size:1.7rem;font-weight:800;color:var(--gold);letter-spacing:.08em;margin-bottom:.5rem">F<span style="font-style:italic;font-weight:400">olio</span></div>
-            <h3 class="rating-title">¿Cómo calificarías<br>tu experiencia?</h3>
-            <p class="rating-subtitle">Tu opinión nos ayuda a mejorar</p>
-        </div>
+        <div style="font-family:var(--serif);font-size:1.7rem;font-weight:800;color:var(--gold);letter-spacing:.08em;margin-bottom:.5rem">F<span style="font-style:italic;font-weight:400">olio</span></div>
+        <h3 class="rating-title">¿Cómo calificarías<br>tu experiencia?</h3>
+        <p class="rating-subtitle">Tu opinión nos ayuda a mejorar</p>
         <div id="rating-stars-container" class="rating-stars-container">
-            <span class="rs-star empty">★</span>
-            <span class="rs-star empty">★</span>
-            <span class="rs-star empty">★</span>
-            <span class="rs-star empty">★</span>
-            <span class="rs-star empty">★</span>
+            <span class="rs-star empty">★</span><span class="rs-star empty">★</span><span class="rs-star empty">★</span><span class="rs-star empty">★</span><span class="rs-star empty">★</span>
         </div>
         <div id="rating-label" class="rating-label-text">Pasa el cursor sobre las estrellas</div>
         <button id="rating-submit-btn" class="rating-submit-btn" onclick="submitRating()" style="display:none">Enviar calificación →</button>
@@ -467,27 +459,17 @@
     </div>
 </div>
 
-<!-- ══ RATING TRIGGER ══════════════════════════════════════════ -->
 <button class="rating-fab" id="rating-fab" onclick="openRating()" title="Calificar Folio">
-    <span id="fab-star">★</span>
-    <span id="fab-text">Calificar</span>
+    <span id="fab-star">★</span><span id="fab-text">Calificar</span>
 </button>
 
-<!-- ══ THEME SWITCHER ══════════════════════════════════════════ -->
 <div class="theme-switcher" id="theme-switcher">
     <span class="theme-switcher-label">Tema</span>
-    <button class="theme-btn active" id="tbtn-default" onclick="setTheme('default')" title="Oscuro Clásico">
-        <span class="theme-dot" style="background:linear-gradient(135deg,#080808 50%,#c9a84c 50%)"></span>
-    </button>
-    <button class="theme-btn" id="tbtn-warm" onclick="setTheme('warm')" title="Ámbar Antiguo">
-        <span class="theme-dot" style="background:linear-gradient(135deg,#0c0805 50%,#d4922a 50%)"></span>
-    </button>
-    <button class="theme-btn" id="tbtn-neon" onclick="setTheme('neon')" title="Neón Digital">
-        <span class="theme-dot" style="background:linear-gradient(135deg,#040810 50%,#00c8ff 50%)"></span>
-    </button>
+    <button class="theme-btn active" id="tbtn-default" onclick="setTheme('default')" title="Oscuro Clásico"><span class="theme-dot" style="background:linear-gradient(135deg,#080808 50%,#c9a84c 50%)"></span></button>
+    <button class="theme-btn" id="tbtn-warm" onclick="setTheme('warm')" title="Ámbar Antiguo"><span class="theme-dot" style="background:linear-gradient(135deg,#0c0805 50%,#d4922a 50%)"></span></button>
+    <button class="theme-btn" id="tbtn-neon" onclick="setTheme('neon')" title="Neón Digital"><span class="theme-dot" style="background:linear-gradient(135deg,#040810 50%,#00c8ff 50%)"></span></button>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
