@@ -251,16 +251,29 @@ nav {
 }
 .nav-logo {
     justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
     font-family: var(--serif);
     font-size: 1.9rem;
     font-weight: 800;
     letter-spacing: .08em;
     color: var(--gold);
     text-decoration: none;
-    transition: opacity .2s;
+    transition: opacity .2s, transform .25s var(--ease-out);
 }
-.nav-logo span { font-style: italic; font-weight: 400; }
-.nav-logo:hover { opacity: .8; }
+.nav-logo:hover { opacity: .85; transform: translateY(-1px); }
+.folio-mark {
+    width: 32px; height: 32px;
+    color: var(--gold);
+    flex-shrink: 0;
+    transition: transform .35s var(--ease-out);
+}
+.nav-logo:hover .folio-mark { transform: rotate(-4deg) scale(1.05); }
+.folio-text { display: inline-block; line-height: 1; }
+.folio-text em { font-style: italic; font-weight: 400; }
+.footer-logo .folio-mark { width: 28px; height: 28px; }
+.footer-logo { font-size: 1.6rem; }
 .nav-links { justify-self: center; display: flex; gap: 2rem; list-style: none; }
 .nav-links a{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;position:relative}
 .nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--gold);transition:width .3s var(--ease-out)}
@@ -330,8 +343,18 @@ section{position:relative;z-index:1}
 .section-title em{font-style:italic;color:var(--gold)}
 .section-line{width:55px;height:1px;background:var(--gold);margin:1.4rem auto 0}
 
-/* ── CATEGORIES ──────────────────────────────────────────────── */
-.categories{padding:5.5rem 3rem;background:var(--surface)}
+/* ── CATEGORIES — Cosmic Velvet ──────────────────────────────── */
+.categories{
+    padding:5.5rem 3rem;
+    position:relative;
+    overflow:hidden;
+    background-color:var(--surface);
+    background-image:
+        radial-gradient(ellipse 130% 120% at 50% 50%, transparent 50%, rgba(0,0,0,.22) 100%),
+        radial-gradient(ellipse 80% 50% at 12% 0%, rgba(125,70,200,.13) 0%, transparent 62%),
+        radial-gradient(ellipse 70% 50% at 90% 100%, rgba(201,168,76,.10) 0%, transparent 65%),
+        radial-gradient(ellipse 110% 80% at 50% 50%, rgba(40,20,80,.18) 0%, transparent 70%);
+}
 .cat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1.2rem}
 
 .cat-card{
@@ -508,8 +531,22 @@ section{position:relative;z-index:1}
 .featured-price-old{font-family:var(--mono);font-size:.82rem;color:#555;text-decoration:line-through;margin-left:.6rem}
 .featured-discount{background:var(--gold);color:var(--obsidian);font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;padding:.2rem .65rem;font-weight:700;margin-left:.5rem}
 
-/* ── NEW RELEASES ────────────────────────────────────────────── */
-.new-releases{padding:5.5rem 3rem;background:var(--surface)}
+/* ── NEW RELEASES — Library at Dusk ──────────────────────────── */
+.new-releases{
+    padding:5.5rem 3rem;
+    position:relative;
+    overflow:hidden;
+    background-color:var(--deep);
+    background-image:
+        radial-gradient(ellipse 90% 45% at 50% 0%, rgba(201,168,76,.13) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 45% at 0% 75%, rgba(160,80,40,.10) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 45% at 100% 75%, rgba(160,80,40,.10) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(20,15,10,.4) 0%, transparent 30%, transparent 70%, rgba(10,8,5,.5) 100%);
+}
+.new-releases::before{
+    content:'';position:absolute;left:0;right:0;top:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(201,168,76,.35),transparent);
+}
 .releases-scroll{display:flex;gap:1.6rem;overflow-x:auto;padding-bottom:1.4rem;scrollbar-width:thin;scrollbar-color:var(--gold-dim) transparent;perspective:700px}
 .releases-scroll::-webkit-scrollbar{height:3px}
 .releases-scroll::-webkit-scrollbar-thumb{background:var(--gold-dim)}
@@ -530,9 +567,20 @@ section{position:relative;z-index:1}
 .release-card:hover .release-add-btn{opacity:1;transform:translateY(0)}
 .release-add-btn:hover{background:var(--gold);color:var(--obsidian);border-color:var(--gold)}
 
-/* ── NEWSLETTER ──────────────────────────────────────────────── */
-.newsletter{padding:5.5rem 3rem;background:var(--surface2);position:relative;overflow:hidden}
-.newsletter::before{content:'FOLIO';position:absolute;font-family:var(--serif);font-size:18rem;font-weight:800;color:rgba(201,168,76,.022);top:-3rem;right:-1.5rem;pointer-events:none;white-space:nowrap;font-style:italic}
+/* ── NEWSLETTER — Velvet Study ───────────────────────────────── */
+.newsletter{
+    padding:5.5rem 3rem;
+    position:relative;
+    overflow:hidden;
+    background-color:var(--surface2);
+    background-image:
+        radial-gradient(ellipse 130% 120% at 50% 50%, transparent 55%, rgba(0,0,0,.20) 100%),
+        radial-gradient(ellipse 70% 55% at 50% 50%, rgba(201,168,76,.13) 0%, transparent 60%),
+        radial-gradient(ellipse 100% 70% at 50% 100%, rgba(80,40,140,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 0% 0%, rgba(40,30,80,.10) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 50% at 100% 0%, rgba(40,30,80,.10) 0%, transparent 65%);
+}
+.newsletter::before{content:'FOLIO';position:absolute;font-family:var(--serif);font-size:18rem;font-weight:800;color:rgba(201,168,76,.035);top:-3rem;right:-1.5rem;pointer-events:none;white-space:nowrap;font-style:italic;letter-spacing:-0.02em;z-index:0}
 .newsletter-inner{max-width:580px;margin:0 auto;text-align:center;position:relative;z-index:1}
 .newsletter-title{font-family:var(--serif);font-size:clamp(2rem,4vw,2.9rem);font-weight:600;margin-bottom:.9rem}
 .newsletter-sub{font-family:var(--cond);font-size:1rem;color:#888;line-height:1.7;font-style:italic;margin-bottom:2.2rem}
@@ -560,6 +608,12 @@ footer{background:var(--obsidian);border-top:1px solid var(--border);padding:3.5
 .social-icon{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--border);border-radius:2px;color:#555;transition:all .3s;text-decoration:none}
 .social-icon svg{width:17px;height:17px}
 .social-icon:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.06);transform:translateY(-2px)}
+.footer-col-map .footer-map-link{display:block;border:1px solid var(--border);border-radius:4px;overflow:hidden;transition:border-color .25s,transform .35s var(--ease-out);position:relative}
+.footer-col-map .footer-map-link:hover{border-color:var(--gold);transform:translateY(-2px)}
+.footer-map{display:block;width:100%;height:155px;border:0;filter:grayscale(.4) contrast(1.05) brightness(.9);transition:filter .35s}
+.footer-col-map .footer-map-link:hover .footer-map{filter:none}
+.footer-map-addr{font-family:var(--cond);font-size:.88rem;color:#777;font-style:italic;margin-top:.8rem;line-height:1.5}
+
 .footer-bottom{border-top:1px solid var(--border);padding-top:1.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
 .footer-copy{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#444}
 
@@ -677,18 +731,29 @@ footer{background:var(--obsidian);border-top:1px solid var(--border);padding:3.5
 .back-meta-item span{font-family:var(--cond);font-size:.88rem;color:var(--cream);display:block;margin-top:.15rem}
 .back-stars{color:var(--gold);font-size:.9rem;letter-spacing:.05rem;margin-bottom:.35rem}
 
-.featured-banner::before{
-    top:50%;left:22%;
+.featured-banner::before,
+.featured-banner::after { content: none; }
+
+.featured-image-wrap{position:relative}
+.featured-image-wrap::before,
+.featured-image-wrap::after{
+    content:'';
+    position:absolute;
+    top:50%;left:50%;
     transform:translate(-50%,-50%);
-    width:580px;height:580px;
-    border:1px solid rgba(201,168,76,.09);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:0;
 }
-.featured-banner::after{
-    top:50%;left:22%;
-    transform:translate(-50%,-50%);
-    width:400px;height:400px;
-    border:1px solid rgba(201,168,76,.05);
+.featured-image-wrap::before{
+    width:560px;height:560px;
+    border:1px solid rgba(201,168,76,.10);
 }
+.featured-image-wrap::after{
+    width:380px;height:380px;
+    border:1px solid rgba(201,168,76,.06);
+}
+.featured-book-3d{position:relative;z-index:1}
 .featured-glow{
     background:radial-gradient(circle,rgba(201,168,76,.6) 0%,transparent 70%) !important;
     filter:blur(22px) !important;

@@ -7,7 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 </head>
 <body>
 
@@ -35,7 +36,21 @@
 <div id="auth-overlay" class="auth-overlay" onclick="closeAuth()"></div>
 <div id="auth-modal" class="auth-modal glass-panel">
     <button class="auth-close" onclick="closeAuth()">✕</button>
-    <div class="auth-logo">F<span>olio</span></div>
+    <div class="auth-logo">
+        <svg class="folio-mark" viewBox="0 0 44 44" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+                <path d="M5 9 Q5 6.5 7.5 6.5 L18 6.5 Q21 7.5 22 10 L22 37 Q21 39.5 18 39.5 L7.5 39.5 Q5 39.5 5 37 Z" stroke-width="1.7"/>
+                <path d="M22 10 Q23 7.5 26 6.5 L36.5 6.5 Q39 6.5 39 9 L39 37 Q39 39.5 36.5 39.5 L26 39.5 Q23 39.5 22 37" stroke-width="1.7"/>
+                <line x1="22" y1="10" x2="22" y2="37" stroke-width="0.8" opacity="0.55"/>
+                <line x1="9" y1="14" x2="17" y2="14" stroke-width="0.8" opacity="0.7"/>
+                <line x1="9" y1="18" x2="15" y2="18" stroke-width="0.8" opacity="0.7"/>
+                <line x1="27" y1="14" x2="35" y2="14" stroke-width="0.8" opacity="0.7"/>
+                <line x1="27" y1="18" x2="33" y2="18" stroke-width="0.8" opacity="0.7"/>
+                <circle cx="22" cy="23" r="1.2" fill="currentColor" stroke="none" opacity="0.85"/>
+            </g>
+        </svg>
+        <span class="folio-text">F<em>olio</em></span>
+    </div>
     <div class="auth-tabs">
         <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Iniciar sesión</button>
         <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Registrarse</button>
@@ -155,7 +170,21 @@
 </div>
 
 <nav id="main-nav">
-    <a href="#" class="nav-logo" onclick="event.preventDefault(); scrollToTop()">F<span>olio</span></a>
+    <a href="#" class="nav-logo" onclick="event.preventDefault(); scrollToTop()" aria-label="Folio — Inicio">
+        <svg class="folio-mark" viewBox="0 0 44 44" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+                <path d="M5 9 Q5 6.5 7.5 6.5 L18 6.5 Q21 7.5 22 10 L22 37 Q21 39.5 18 39.5 L7.5 39.5 Q5 39.5 5 37 Z" stroke-width="1.7"/>
+                <path d="M22 10 Q23 7.5 26 6.5 L36.5 6.5 Q39 6.5 39 9 L39 37 Q39 39.5 36.5 39.5 L26 39.5 Q23 39.5 22 37" stroke-width="1.7"/>
+                <line x1="22" y1="10" x2="22" y2="37" stroke-width="0.8" opacity="0.55"/>
+                <line x1="9" y1="14" x2="17" y2="14" stroke-width="0.8" opacity="0.7"/>
+                <line x1="9" y1="18" x2="15" y2="18" stroke-width="0.8" opacity="0.7"/>
+                <line x1="27" y1="14" x2="35" y2="14" stroke-width="0.8" opacity="0.7"/>
+                <line x1="27" y1="18" x2="33" y2="18" stroke-width="0.8" opacity="0.7"/>
+                <circle cx="22" cy="23" r="1.2" fill="currentColor" stroke="none" opacity="0.85"/>
+            </g>
+        </svg>
+        <span class="folio-text">F<em>olio</em></span>
+    </a>
     <ul class="nav-links">
         <li><a href="#catalogo" onclick="event.preventDefault(); scrollToBooks()">Catálogo</a></li>
         <li><a href="#novedades" onclick="event.preventDefault(); scrollToReleases()">Novedades</a></li>
@@ -389,7 +418,21 @@
 <footer>
     <div class="footer-grid">
         <div class="footer-brand">
-            <a href="#" class="nav-logo" onclick="event.preventDefault(); scrollToTop()">F<span>olio</span></a>
+            <a href="#" class="nav-logo footer-logo" onclick="event.preventDefault(); scrollToTop()" aria-label="Folio — Inicio">
+                <svg class="folio-mark" viewBox="0 0 44 44" aria-hidden="true">
+                    <g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+                        <path d="M5 9 Q5 6.5 7.5 6.5 L18 6.5 Q21 7.5 22 10 L22 37 Q21 39.5 18 39.5 L7.5 39.5 Q5 39.5 5 37 Z" stroke-width="1.7"/>
+                        <path d="M22 10 Q23 7.5 26 6.5 L36.5 6.5 Q39 6.5 39 9 L39 37 Q39 39.5 36.5 39.5 L26 39.5 Q23 39.5 22 37" stroke-width="1.7"/>
+                        <line x1="22" y1="10" x2="22" y2="37" stroke-width="0.8" opacity="0.55"/>
+                        <line x1="9" y1="14" x2="17" y2="14" stroke-width="0.8" opacity="0.7"/>
+                        <line x1="9" y1="18" x2="15" y2="18" stroke-width="0.8" opacity="0.7"/>
+                        <line x1="27" y1="14" x2="35" y2="14" stroke-width="0.8" opacity="0.7"/>
+                        <line x1="27" y1="18" x2="33" y2="18" stroke-width="0.8" opacity="0.7"/>
+                        <circle cx="22" cy="23" r="1.2" fill="currentColor" stroke="none" opacity="0.85"/>
+                    </g>
+                </svg>
+                <span class="folio-text">F<em>olio</em></span>
+            </a>
             <p>La librería digital más refinada de América Latina. Más de 500,000 títulos cuidadosamente curados.</p>
             <div class="footer-socials">
                 <a href="https://www.instagram.com/alejo_ojeda1203/" target="_blank" class="social-icon" title="Instagram">
@@ -412,14 +455,12 @@
                 <li><a href="#" onclick="event.preventDefault(); showToast('Audiolibros — próximamente')">Audiolibros</a></li>
             </ul>
         </div>
-        <div class="footer-col">
-            <h4>Información</h4>
-            <ul>
-                <li><a href="#" onclick="event.preventDefault(); showToast('Sobre Folio')">Sobre Folio</a></li>
-                <li><a href="#" onclick="event.preventDefault(); showToast('Envíos gratuitos sobre $40')">Envíos</a></li>
-                <li><a href="#" onclick="event.preventDefault(); showToast('Devoluciones sin costo en 30 días')">Devoluciones</a></li>
-                <li><a href="#" onclick="event.preventDefault(); scrollToNewsletter()">Blog editorial</a></li>
-            </ul>
+        <div class="footer-col footer-col-map">
+            <h4>Visítanos</h4>
+            <a class="footer-map-link" href="https://maps.app.goo.gl/XiiQcfsSc5NZz4UK7" target="_blank" rel="noopener" title="Abrir en Google Maps">
+                <iframe class="footer-map" src="https://maps.google.com/maps?q=-0.2616236,-78.5377023&z=16&hl=es&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Ubicación Folio en Quito, Ecuador"></iframe>
+            </a>
+            <p class="footer-map-addr">Serapio Japerabi S15-221<br>Quito 170148 · Ecuador</p>
         </div>
         <div class="footer-col">
             <h4>Mi cuenta</h4>
@@ -442,7 +483,21 @@
 <div id="rating-modal" class="rating-modal">
     <div class="rating-modal-inner">
         <button class="rating-modal-close" onclick="closeRating()">✕</button>
-        <div style="font-family:var(--serif);font-size:1.7rem;font-weight:800;color:var(--gold);letter-spacing:.08em;margin-bottom:.5rem">F<span style="font-style:italic;font-weight:400">olio</span></div>
+        <div class="auth-logo" style="margin-bottom:.5rem">
+            <svg class="folio-mark" viewBox="0 0 44 44" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+                    <path d="M5 9 Q5 6.5 7.5 6.5 L18 6.5 Q21 7.5 22 10 L22 37 Q21 39.5 18 39.5 L7.5 39.5 Q5 39.5 5 37 Z" stroke-width="1.7"/>
+                    <path d="M22 10 Q23 7.5 26 6.5 L36.5 6.5 Q39 6.5 39 9 L39 37 Q39 39.5 36.5 39.5 L26 39.5 Q23 39.5 22 37" stroke-width="1.7"/>
+                    <line x1="22" y1="10" x2="22" y2="37" stroke-width="0.8" opacity="0.55"/>
+                    <line x1="9" y1="14" x2="17" y2="14" stroke-width="0.8" opacity="0.7"/>
+                    <line x1="9" y1="18" x2="15" y2="18" stroke-width="0.8" opacity="0.7"/>
+                    <line x1="27" y1="14" x2="35" y2="14" stroke-width="0.8" opacity="0.7"/>
+                    <line x1="27" y1="18" x2="33" y2="18" stroke-width="0.8" opacity="0.7"/>
+                    <circle cx="22" cy="23" r="1.2" fill="currentColor" stroke="none" opacity="0.85"/>
+                </g>
+            </svg>
+            <span class="folio-text">F<em>olio</em></span>
+        </div>
         <h3 class="rating-title">¿Cómo calificarías<br>tu experiencia?</h3>
         <p class="rating-subtitle">Tu opinión nos ayuda a mejorar</p>
         <div id="rating-stars-container" class="rating-stars-container">
@@ -470,6 +525,9 @@
     <button class="theme-btn" id="tbtn-neon" onclick="setTheme('neon')" title="Neón Digital"><span class="theme-dot" style="background:linear-gradient(135deg,#040810 50%,#00c8ff 50%)"></span></button>
 </div>
 
-<script src="script.js"></script>
+<script src="js/data.js?v=3"></script>
+<script src="js/api.js?v=3"></script>
+<script src="js/scene.js?v=3"></script>
+<script src="js/app.js?v=3"></script>
 </body>
 </html>
